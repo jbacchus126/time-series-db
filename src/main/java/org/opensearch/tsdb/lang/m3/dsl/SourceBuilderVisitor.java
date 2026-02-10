@@ -51,6 +51,7 @@ import org.opensearch.tsdb.lang.m3.stage.LogarithmStage;
 import org.opensearch.tsdb.lang.m3.stage.MapKeyStage;
 import org.opensearch.tsdb.lang.m3.stage.MaxStage;
 import org.opensearch.tsdb.lang.m3.stage.MinStage;
+import org.opensearch.tsdb.lang.m3.stage.MockFetchStage;
 import org.opensearch.tsdb.lang.m3.stage.OffsetStage;
 import org.opensearch.tsdb.lang.m3.stage.MovingStage;
 import org.opensearch.tsdb.lang.m3.stage.PerSecondRateStage;
@@ -95,6 +96,7 @@ import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.KeepLastValuePlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.LogarithmPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.M3PlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MapKeyPlanNode;
+import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MockFetchPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MovingPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.OffsetPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.PerSecondPlanNode;
@@ -409,6 +411,40 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
                 )
             );
         }
+
+        return holder;
+    }
+
+    @Override
+    public ComponentHolder visit(MockFetchPlanNode planNode) {
+        // Add TruncateStage if this is root visitor and time buffer was adjusted
+        if (isRootVisitor && context.isTimeBufferAdjusted() && (stageStack.isEmpty() || !(stageStack.get(0) instanceof TruncateStage))) {
+            long truncateStart = context.getTruncateStartTime() != null ? context.getTruncateStartTime() : params.startTime();
+            stageStack.add(0, new TruncateStage(truncateStart, params.endTime()));
+        }
+
+        // Create MockFetchStage with query context
+        MockFetchStage mockFetchStage = new MockFetchStage(planNode.getValues(), planNode.getTags());
+        mockFetchStage.setQueryContext(params.startTime(), params.step());
+
+        // Build coordinator stages: MockFetchStage followed by all accumulated pipeline stages
+        List<PipelineStage> coordinatorStages = new ArrayList<>();
+        coordinatorStages.add(mockFetchStage);
+        while (!stageStack.isEmpty()) {
+            coordinatorStages.add(stageStack.pop());
+        }
+
+        ComponentHolder holder = new ComponentHolder(planNode.getId());
+        holder.addQuery(QueryBuilders.matchAllQuery());
+        holder.addPipelineAggregationBuilder(
+            new TimeSeriesCoordinatorAggregationBuilder(
+                planNode.getId() + COORDINATOR_NAME_SUFFIX,
+                coordinatorStages,
+                EMPTY_MAP,
+                Map.of(),
+                null
+            )
+        );
 
         return holder;
     }
