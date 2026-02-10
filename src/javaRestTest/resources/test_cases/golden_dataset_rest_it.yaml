@@ -21,189 +21,189 @@ test_case:
         step: "1m"
       regular_metrics:
       # test_case_fetch_simple
-      - labels: "__name__:test_metric,dc:dca1,test:fetch_simple"
+      - labels: "name:test_metric,dc:dca1,test:fetch_simple"
         values: [1, 2, 3, 4, null, null, null]
 
       # test_case_fetch_with_nan
-      - labels: "__name__:test_metric,dc:dca1,test:fetch_nan"
+      - labels: "name:test_metric,dc:dca1,test:fetch_nan"
         values: [1, null, 3, 4, null, null, null]
 
       # test_case_fetch_negative
-      - labels: "__name__:test_metric,dc:dca1,test:fetch_negative"
+      - labels: "name:test_metric,dc:dca1,test:fetch_negative"
         values: [-5, 10, -3, 7, null, null, null]
 
       # test_case_sum_basic
-      - labels: "__name__:cpu,dc:dca1,test:sum_basic"
+      - labels: "name:cpu,dc:dca1,test:sum_basic"
         values: [1, 2, 3, null, null, null, null]
-      - labels: "__name__:memory,dc:dca1,test:sum_basic"
+      - labels: "name:memory,dc:dca1,test:sum_basic"
         values: [4, 5, 6, null, null, null, null]
 
       # test_case_sum_by_tag
-      - labels: "__name__:requests,dc:dca1,service:web,test:sum_by_tag"
+      - labels: "name:requests,dc:dca1,service:web,test:sum_by_tag"
         values: [10, 20, 30, null, null, null, null]
-      - labels: "__name__:requests,dc:phx1,service:web,test:sum_by_tag"
+      - labels: "name:requests,dc:phx1,service:web,test:sum_by_tag"
         values: [15, 25, 35, null, null, null, null]
 
       # test_case_avg_basic
-      - labels: "__name__:latency,service:web,dc:dca1,test:avg_basic"
+      - labels: "name:latency,service:web,dc:dca1,test:avg_basic"
         values: [10, 20, 30, null, null, null, null]
-      - labels: "__name__:latency,service:web,dc:phx1,test:avg_basic"
+      - labels: "name:latency,service:web,dc:phx1,test:avg_basic"
         values: [20, 30, 40, null, null, null, null]
 
       # test_case_averageSeries
-      - labels: "__name__:requests,service:web,dc:dca1,test:averageSeries"
+      - labels: "name:requests,service:web,dc:dca1,test:averageSeries"
         values: [10, 20, 30, null, null, null, null]
-      - labels: "__name__:requests,service:api,dc:dca1,test:averageSeries"
+      - labels: "name:requests,service:api,dc:dca1,test:averageSeries"
         values: [20, 30, 40, null, null, null, null]
 
       # test_case_max_basic
-      - labels: "__name__:cpu,dc:dca1,service:web,test:max_basic"
+      - labels: "name:cpu,dc:dca1,service:web,test:max_basic"
         values: [5, 15, 10, null, null, null, null]
-      - labels: "__name__:cpu,dc:dca1,service:api,test:max_basic"
+      - labels: "name:cpu,dc:dca1,service:api,test:max_basic"
         values: [8, 12, 6, null, null, null, null]
 
       # test_case_min_basic
-      - labels: "__name__:latency,dc:dca1,service:web,test:min_basic"
+      - labels: "name:latency,dc:dca1,service:web,test:min_basic"
         values: [5, 15, 10, null, null, null, null]
-      - labels: "__name__:latency,dc:dca1,service:api,test:min_basic"
+      - labels: "name:latency,dc:dca1,service:api,test:min_basic"
         values: [8, 12, 6, null, null, null, null]
 
       # test_case_median_basi
-      - labels: "__name__:response,dc:dca1,service:web,test:median_basic"
+      - labels: "name:response,dc:dca1,service:web,test:median_basic"
         values: [1, 5, 3, null, null, null, null]
-      - labels: "__name__:response,dc:dca1,service:api,test:median_basic"
+      - labels: "name:response,dc:dca1,service:api,test:median_basic"
         values: [2, 4, 8, null, null, null, null]
 
       # test_case_count_basic
-      - labels: "__name__:test,dc:dca1,test:count_basic,instance:a"
+      - labels: "name:test,dc:dca1,test:count_basic,instance:a"
         values: [1, 2, null, 4, null, null, null]
-      - labels: "__name__:test,dc:dca1,test:count_basic,instance:b"
+      - labels: "name:test,dc:dca1,test:count_basic,instance:b"
         values: [1, 2, 3, 4, null, null, null]
 
       # test_case_scale_basic
-      - labels: "__name__:metric,dc:dca1,test:scale_basic"
+      - labels: "name:metric,dc:dca1,test:scale_basic"
         values: [5, 10, 15, 20, null, null, null]
 
       # test_case_absolute_basic
-      - labels: "__name__:temperature,dc:dca1,test:absolute_basic"
+      - labels: "name:temperature,dc:dca1,test:absolute_basic"
         values: [-5, 10, -3, 7, null, null, null]
 
       # test_case_round_basic
-      - labels: "__name__:precise,dc:dca1,test:round_basic"
+      - labels: "name:precise,dc:dca1,test:round_basic"
         values: [1.234, 5.678, 9.012, null, null, null, null]
 
       # test_case_transformNull_basic
-      - labels: "__name__:sensor,dc:dca1,test:transformNull_basic"
+      - labels: "name:sensor,dc:dca1,test:transformNull_basic"
         values: [1, null, 3, null, 5, null, null]
 
       # test_case_transformNull_negative
-      - labels: "__name__:metric,dc:dca1,test:transformNull_negative"
+      - labels: "name:metric,dc:dca1,test:transformNull_negative"
         values: [10, null, 20, null, null, null, null]
 
       # test_case_keepLastValue_basic
-      - labels: "__name__:cpu,dc:dca1,test:keepLastValue_basic"
+      - labels: "name:cpu,dc:dca1,test:keepLastValue_basic"
         values: [100, null, null, 150, null, null, null]
 
       # test_case_keepLastValue_window
-      - labels: "__name__:memory,dc:dca1,test:keepLastValue_window"
+      - labels: "name:memory,dc:dca1,test:keepLastValue_window"
         values: [50, null, null, null, 80, null, null]
 
       # test_case_derivative_basic
-      - labels: "__name__:counter,dc:dca1,test:derivative_basic"
+      - labels: "name:counter,dc:dca1,test:derivative_basic"
         values: [100, 110, 105, 120, 115, null, null]
 
       # test_case_perSecond_basic
-      - labels: "__name__:bytes,dc:dca1,test:perSecond_basic"
+      - labels: "name:bytes,dc:dca1,test:perSecond_basic"
         values: [1000, 1100, 1050, 1200, null, null, null]
 
       # test_case_integral_basic
-      - labels: "__name__:rate,dc:dca1,test:integral_basic"
+      - labels: "name:rate,dc:dca1,test:integral_basic"
         values: [10, 15, 20, 25, null, null, null]
 
       # test_case_isNonNull_basi
-      - labels: "__name__:sensor,dc:dca1,test:isNonNull_basic"
+      - labels: "name:sensor,dc:dca1,test:isNonNull_basic"
         values: [10, null, 20, null, null, null, null]
 
       # test_case_moving_avg
-      - labels: "__name__:values,dc:dca1,test:moving_avg"
+      - labels: "name:values,dc:dca1,test:moving_avg"
         values: [1, 5, 3, 8, 2, 6, 4]
 
       # test_case_moving_max
-      - labels: "__name__:values,dc:dca1,test:moving_max"
+      - labels: "name:values,dc:dca1,test:moving_max"
         values: [10, 5, 15, 2, 20, 8, null]
 
       # test_case_moving_min
-      - labels: "__name__:values,dc:dca1,test:moving_min"
+      - labels: "name:values,dc:dca1,test:moving_min"
         values: [10, 5, 15, 2, 20, 8, null]
 
       # test_case_moving_sum
-      - labels: "__name__:counter,dc:dca1,test:moving_sum"
+      - labels: "name:counter,dc:dca1,test:moving_sum"
         values: [2, 4, 6, 8, 10, null, null]
 
       # test_case_summarize_sum
-      - labels: "__name__:requests,dc:dca1,test:summarize_sum"
+      - labels: "name:requests,dc:dca1,test:summarize_sum"
         values: [10, 20, 30, 40, 50, 60, null]
 
       # test_case_summarize_avg
-      - labels: "__name__:cpu,dc:dca1,test:summarize_avg"
+      - labels: "name:cpu,dc:dca1,test:summarize_avg"
         values: [10, 20, 30, 40, 50, 60, null]
 
       # test_case_summarize_max
-      - labels: "__name__:latency,dc:dca1,test:summarize_max"
+      - labels: "name:latency,dc:dca1,test:summarize_max"
         values: [5, 15, 8, 25, 12, 30, null]
 
       # test_case_summarize_min
-      - labels: "__name__:errors,dc:dca1,test:summarize_min"
+      - labels: "name:errors,dc:dca1,test:summarize_min"
         values: [15, 5, 25, 8, 35, 12, null]
 
       # test_case_scaleToSeconds_basic
-      - labels: "__name__:hourly_count,dc:dca1,test:scaleToSeconds_basic"
+      - labels: "name:hourly_count,dc:dca1,test:scaleToSeconds_basic"
         values: [3600, 7200, 10800, null, null, null, null]
 
       # test_case_asPercent_basic
-      - labels: "__name__:success,dc:dca1,test:asPercent_basic"
+      - labels: "name:success,dc:dca1,test:asPercent_basic"
         values: [90, 95, 85, null, null, null, null]
-      - labels: "__name__:total,dc:dca1,test:asPercent_basic"
+      - labels: "name:total,dc:dca1,test:asPercent_basic"
         values: [100, 100, 100, null, null, null, null]
 
       # test_case_divide_basic
-      - labels: "__name__:numerator,dc:dca1,test:divide_basic"
+      - labels: "name:numerator,dc:dca1,test:divide_basic"
         values: [100, 200, 300, null, null, null, null]
-      - labels: "__name__:denominator,dc:dca1,test:divide_basic"
+      - labels: "name:denominator,dc:dca1,test:divide_basic"
         values: [10, 20, 30, null, null, null, null]
 
       # test_case_subtract_basic
-      - labels: "__name__:total,dc:dca1,test:subtract_basic"
+      - labels: "name:total,dc:dca1,test:subtract_basic"
         values: [100, 150, 200, null, null, null, null]
-      - labels: "__name__:errors,dc:dca1,test:subtract_basic"
+      - labels: "name:errors,dc:dca1,test:subtract_basic"
         values: [10, 25, 40, null, null, null, null]
 
       # test_case_multiply_basic
-      - labels: "__name__:base,dc:dca1,test:multiply_basic"
+      - labels: "name:base,dc:dca1,test:multiply_basic"
         values: [5, 10, 15, null, null, null, null]
-      - labels: "__name__:multiplier,dc:dca1,test:multiply_basic"
+      - labels: "name:multiplier,dc:dca1,test:multiply_basic"
         values: [2, 3, 4, null, null, null, null]
 
       # test_case_ratio_basic
-      - labels: "__name__:current,dc:dca1,test:ratio_basic"
+      - labels: "name:current,dc:dca1,test:ratio_basic"
         values: [50, 100, 75, null, null, null, null]
-      - labels: "__name__:baseline,dc:dca1,test:ratio_basic"
+      - labels: "name:baseline,dc:dca1,test:ratio_basic"
         values: [40, 80, 60, null, null, null, null]
 
       # test_case_sort_max_desc
-      - labels: "__name__:series1,dc:dca1,test:sort"
+      - labels: "name:series1,dc:dca1,test:sort"
         values: [10, 50, 30, null, null, null, null]
-      - labels: "__name__:series2,dc:dca1,test:sort"
+      - labels: "name:series2,dc:dca1,test:sort"
         values: [20, 40, 60, null, null, null, null]
 
       # test_case_sort_avg_asc
-      - labels: "__name__:high,dc:dca1,test:sort_avg"
+      - labels: "name:high,dc:dca1,test:sort_avg"
         values: [100, 200, 300, null, null, null, null]
-      - labels: "__name__:low,dc:dca1,test:sort_avg"
+      - labels: "name:low,dc:dca1,test:sort_avg"
         values: [10, 20, 30, null, null, null, null]
 
       # test_case_head_basic
-      - labels: "__name__:values,dc:dca1,test:head_basic"
+      - labels: "name:values,dc:dca1,test:head_basic"
         values: [10, 20, 30, 40, 50, null, null]
 
       # test_case_alias_basic
@@ -223,9 +223,9 @@ test_case:
         values: [10, 20, 30, null, null, null, null]
 
       # test_case_removeEmpty_basic
-      - labels: "__name__:active,dc:dca1,test:removeEmpty"
+      - labels: "name:active,dc:dca1,test:removeEmpty"
         values: [1, 2, 3, null, null, null, null]
-      - labels: "__name__:inactive,dc:dca1,test:removeEmpty"
+      - labels: "name:inactive,dc:dca1,test:removeEmpty"
         values: [null, null, null, null, null, null, null]
 
       # test_case_excludedByTag_basic
@@ -235,63 +235,63 @@ test_case:
         values: [4, 5, 6, null, null, null, null]
 
       # test_case_timeshift_basic:
-      - labels: "__name__:current,dc:dca1,test:timeshift_basic"
+      - labels: "name:current,dc:dca1,test:timeshift_basic"
         values: [10, 20, 30, 40, null, null, null]
 
       # test_case_intersect_basic
-      - labels: "__name__:cpu,region:us,dc:dca1,test:intersectL"
+      - labels: "name:cpu,region:us,dc:dca1,test:intersectL"
         values: [10, 20, 30, null, null, null, null]
-      - labels: "__name__:cpu,region:us,dc:phx1,test:intersectR"
+      - labels: "name:cpu,region:us,dc:phx1,test:intersectR"
         values: [15, 25, 35, null, null, null, null]
 
       # test_case_fallbackSeries_basic
-      - labels: "__name__:primary,dc:dca1,test:fallbackSeries"
+      - labels: "name:primary,dc:dca1,test:fallbackSeries"
         values: [null, null, null, null, null, null, null]
-      - labels: "__name__:backup,dc:dca1,test:fallbackSeries"
+      - labels: "name:backup,dc:dca1,test:fallbackSeries"
         values: [10, 20, 30, null, null, null, null]
 
       # test_case_scale_multi_step_pipeline
-      - labels: "__name__:raw_sensor,dc:dca1,test:scale_pipeline"
+      - labels: "name:raw_sensor,dc:dca1,test:scale_pipeline"
         values: [-10, -20, 30, -40, null, null, null]
 
       # test_case_keepLastValue_complex_gaps
-      - labels: "__name__:intermittent,dc:dca1,test:keepLastValue_complex"
+      - labels: "name:intermittent,dc:dca1,test:keepLastValue_complex"
         values: [100, null, null, 150, null, null, 200]
 
       # test_case_percentileOfSeries_basic
-      - labels: "__name__:latency,dc:dca1,test:percentile"
+      - labels: "name:latency,dc:dca1,test:percentile"
         values: [10, 20, 30, 40, 50, null, null]
-      - labels: "__name__:latency,dc:dca2,test:percentile"
+      - labels: "name:latency,dc:dca2,test:percentile"
         values: [10, 20, 30, 40, 50, null, null]
-      - labels: "__name__:latency,dc:dca3,test:percentile"
+      - labels: "name:latency,dc:dca3,test:percentile"
         values: [10, 20, 30, 40, 50, null, null]
-      - labels: "__name__:latency,dc:dca4,test:percentile"
+      - labels: "name:latency,dc:dca4,test:percentile"
         values: [100, 200, 300, 400, 500, null, null]
 
       # test_case_medianOfSeries_basic
-      - labels: "__name__:response_time,dc:dca1,test:medianOfSeries"
+      - labels: "name:response_time,dc:dca1,test:medianOfSeries"
         values: [1, 3, 2, 6, 4, null, null]
 
       # test_case_sum_multi_datacenter
-      - labels: "__name__:requests,service:web,dc:dca1,test:sum_multi"
+      - labels: "name:requests,service:web,dc:dca1,test:sum_multi"
         values: [100, 200, 150, null, null, null, null]
-      - labels: "__name__:requests,service:api,dc:dca1,test:sum_multi"
+      - labels: "name:requests,service:api,dc:dca1,test:sum_multi"
         values: [80, 180, 120, null, null, null, null]
-      - labels: "__name__:requests,service:web,dc:phx1,test:sum_multi"
+      - labels: "name:requests,service:web,dc:phx1,test:sum_multi"
         values: [120, 220, 170, null, null, null, null]
-      - labels: "__name__:requests,service:api,dc:phx1,test:sum_multi"
+      - labels: "name:requests,service:api,dc:phx1,test:sum_multi"
         values: [90, 190, 130, null, null, null, null]
 
       # test_case_asPercent_error_rate
-      - labels: "__name__:total_requests,service:api,dc:dca1,test:error_rate"
+      - labels: "name:total_requests,service:api,dc:dca1,test:error_rate"
         values: [1000, 2000, 1500, null, null, null, null]
-      - labels: "__name__:error_requests,service:api,dc:dca1,test:error_rate"
+      - labels: "name:error_requests,service:api,dc:dca1,test:error_rate"
         values: [50, 100, 75, null, null, null, null]
 
       # test_case_asPercent_capacity_utilization
-      - labels: "__name__:used_memory,service:db,dc:dca1,test:capacity"
+      - labels: "name:used_memory,service:db,dc:dca1,test:capacity"
         values: [750, 800, 650, null, null, null, null]
-      - labels: "__name__:total_memory,service:db,dc:dca1,test:capacity"
+      - labels: "name:total_memory,service:db,dc:dca1,test:capacity"
         values: [1000, 1000, 1000, null, null, null, null]
 
   queries:
@@ -307,7 +307,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "test_metric", dc: "dca1", test: "fetch_simple"}
+          - metric: {name: "test_metric", dc: "dca1", test: "fetch_simple"}
             values: [1, 2, 3, 4]
 
     - name: "test_case_fetch_with_nan"
@@ -321,7 +321,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "test_metric", dc: "dca1", test: "fetch_nan"}
+          - metric: {name: "test_metric", dc: "dca1", test: "fetch_nan"}
             values: [1, null, 3, 4]
 
     - name: "test_case_fetch_negative"
@@ -335,7 +335,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "test_metric", dc: "dca1", test: "fetch_negative"}
+          - metric: {name: "test_metric", dc: "dca1", test: "fetch_negative"}
             values: [-5, 10, -3, 7]
 
 
@@ -400,7 +400,7 @@ test_case:
     - name: "test_case_max_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:max_basic | max __name__"
+      query: "fetch test:max_basic | max name"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -408,13 +408,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "cpu"}
+          - metric: {name: "cpu"}
             values: [8, 15, 10]
 
     - name: "test_case_min_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:min_basic | min __name__"
+      query: "fetch test:min_basic | min name"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -422,7 +422,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "latency"}
+          - metric: {name: "latency"}
             values: [5, 12, 6]
 
     - name: "test_case_median_basic"
@@ -509,7 +509,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "metric", dc: "dca1", test: "scale_basic"}
+          - metric: {name: "metric", dc: "dca1", test: "scale_basic"}
             values: [10, 20, 30, 40]
 
     - name: "test_case_absolute_basic"
@@ -523,7 +523,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "temperature", dc: "dca1", test: "absolute_basic"}
+          - metric: {name: "temperature", dc: "dca1", test: "absolute_basic"}
             values: [5, 10, 3, 7]
 
     - name: "test_case_transformNull_basic"
@@ -537,7 +537,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "sensor", dc: "dca1", test: "transformNull_basic"}
+          - metric: {name: "sensor", dc: "dca1", test: "transformNull_basic"}
             values: [1, 0, 3, 0, 5]
 
     - name: "test_case_transformNull_negative"
@@ -551,7 +551,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "metric", dc: "dca1", test: "transformNull_negative"}
+          - metric: {name: "metric", dc: "dca1", test: "transformNull_negative"}
             values: [10, -1, 20, -1]
 
     - name: "test_case_keepLastValue_basic"
@@ -565,7 +565,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "cpu", dc: "dca1", test: "keepLastValue_basic"}
+          - metric: {name: "cpu", dc: "dca1", test: "keepLastValue_basic"}
             values: [100, 100, 100, 150, 150]
 
     - name: "test_case_keepLastValue_window"
@@ -579,7 +579,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "memory", dc: "dca1", test: "keepLastValue_window"}
+          - metric: {name: "memory", dc: "dca1", test: "keepLastValue_window"}
             values: [50, 50, null, null, 80]
 
     - name: "test_case_keepLastValue_complex_gaps"
@@ -593,13 +593,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "intermittent", dc: "dca1", test: "keepLastValue_complex"}
+          - metric: {name: "intermittent", dc: "dca1", test: "keepLastValue_complex"}
             values: [100, 100, 100, 150, 150, 150, 200]
 
     - name: "test_case_fallbackSeries_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:fallbackSeries __name__:primary | fallbackSeries(fetch test:fallbackSeries __name__:backup)"
+      query: "fetch test:fallbackSeries name:primary | fallbackSeries(fetch test:fallbackSeries name:backup)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -607,7 +607,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "backup", dc: "dca1", test: "fallbackSeries"}
+          - metric: {name: "backup", dc: "dca1", test: "fallbackSeries"}
             values: [10, 20, 30]
 
 
@@ -622,7 +622,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "counter", dc: "dca1", test: "derivative_basic"}
+          - metric: {name: "counter", dc: "dca1", test: "derivative_basic"}
             values: [null, 10, -5, 15, -5]
 
     - name: "test_case_perSecond_basic"
@@ -636,7 +636,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "bytes", dc: "dca1", test: "perSecond_basic"}
+          - metric: {name: "bytes", dc: "dca1", test: "perSecond_basic"}
             values: [null, 1.6666666666666667, null, 2.5]
 
     - name: "test_case_integral_basic"
@@ -650,7 +650,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "rate", dc: "dca1", test: "integral_basic"}
+          - metric: {name: "rate", dc: "dca1", test: "integral_basic"}
             values: [10, 25, 45, 70]
 
     - name: "test_case_isNonNull_basic"
@@ -664,7 +664,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "sensor", dc: "dca1", test: "isNonNull_basic"}
+          - metric: {name: "sensor", dc: "dca1", test: "isNonNull_basic"}
             values: [1, 0, 1, 0]
 
     - name: "test_case_scaleToSeconds_basic"
@@ -678,7 +678,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "hourly_count", dc: "dca1", test: "scaleToSeconds_basic"}
+          - metric: {name: "hourly_count", dc: "dca1", test: "scaleToSeconds_basic"}
             values: [216000, 432000, 648000]
 
     - name: "test_case_moving_avg"
@@ -692,7 +692,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "values", dc: "dca1", test: "moving_avg"}
+          - metric: {name: "values", dc: "dca1", test: "moving_avg"}
             values: [1, 3, 3, 5.333333333333333, 4.333333333333333, 5.333333333333333]
 
     - name: "test_case_moving_sum"
@@ -706,7 +706,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "counter", dc: "dca1", test: "moving_sum"}
+          - metric: {name: "counter", dc: "dca1", test: "moving_sum"}
             values: [2, 6, 12, 18, 24]
 
     - name: "test_case_moving_max"
@@ -720,7 +720,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "values", dc: "dca1", test: "moving_max"}
+          - metric: {name: "values", dc: "dca1", test: "moving_max"}
             values: [10, 10, 15, 15, 20]
 
     - name: "test_case_moving_min"
@@ -734,7 +734,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "values", dc: "dca1", test: "moving_min"}
+          - metric: {name: "values", dc: "dca1", test: "moving_min"}
             values: [10, 5, 5, 2, 2]
 
     - name: "test_case_summarize_sum"
@@ -748,7 +748,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "requests", dc: "dca1", test: "summarize_sum"}
+          - metric: {name: "requests", dc: "dca1", test: "summarize_sum"}
             values: [30, null, 70, null, 110, null, null]
 
     - name: "test_case_summarize_avg"
@@ -762,7 +762,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "cpu", dc: "dca1", test: "summarize_avg"}
+          - metric: {name: "cpu", dc: "dca1", test: "summarize_avg"}
             values: [20, null, null, 50, null, null, null]
 
     - name: "test_case_summarize_max"
@@ -776,7 +776,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "latency", dc: "dca1", test: "summarize_max"}
+          - metric: {name: "latency", dc: "dca1", test: "summarize_max"}
             values: [15, null, 25, null, 30, null, null]
 
     - name: "test_case_summarize_min"
@@ -790,14 +790,14 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "errors", dc: "dca1", test: "summarize_min"}
+          - metric: {name: "errors", dc: "dca1", test: "summarize_min"}
             values: [5, null, null, 8, null, null, null]
 
 
     - name: "test_case_asPercent_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:asPercent_basic __name__:success | asPercent(fetch test:asPercent_basic __name__:total)"
+      query: "fetch test:asPercent_basic name:success | asPercent(fetch test:asPercent_basic name:total)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -805,13 +805,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "success", dc: "dca1", test: "asPercent_basic", type: "ratios"}
+          - metric: {name: "success", dc: "dca1", test: "asPercent_basic", type: "ratios"}
             values: [90, 95, 85]
 
     - name: "test_case_divide_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:divide_basic __name__:numerator | divide(fetch test:divide_basic __name__:denominator)"
+      query: "fetch test:divide_basic name:numerator | divide(fetch test:divide_basic name:denominator)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -819,13 +819,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "numerator", dc: "dca1", test: "divide_basic", type: "ratios"}
+          - metric: {name: "numerator", dc: "dca1", test: "divide_basic", type: "ratios"}
             values: [10, 10, 10]
 
     - name: "test_case_subtract_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:subtract_basic __name__:total | subtract(fetch test:subtract_basic __name__:errors)"
+      query: "fetch test:subtract_basic name:total | subtract(fetch test:subtract_basic name:errors)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -833,7 +833,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "total", dc: "dca1", test: "subtract_basic"}
+          - metric: {name: "total", dc: "dca1", test: "subtract_basic"}
             values: [90, 125, 160]
 
     - name: "test_case_multiply_basic"
@@ -853,7 +853,7 @@ test_case:
     - name: "test_case_ratio_basic"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:ratio_basic __name__:current | ratio(fetch test:ratio_basic __name__:baseline)"
+      query: "fetch test:ratio_basic name:current | ratio(fetch test:ratio_basic name:baseline)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -861,13 +861,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "current", dc: "dca1", test: "ratio_basic", type: "ratios"}
+          - metric: {name: "current", dc: "dca1", test: "ratio_basic", type: "ratios"}
             values: [125, 125, 125]
 
     - name: "test_case_asPercent_error_rate"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:error_rate __name__:error_requests | asPercent(fetch test:error_rate __name__:total_requests)"
+      query: "fetch test:error_rate name:error_requests | asPercent(fetch test:error_rate name:total_requests)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -875,13 +875,13 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "error_requests", service: "api", dc: "dca1", test: "error_rate", type: "ratios"}
+          - metric: {name: "error_requests", service: "api", dc: "dca1", test: "error_rate", type: "ratios"}
             values: [5, 5, 5]
 
     - name: "test_case_asPercent_capacity_utilization"
       type: "m3ql"
       indices: "golden_all"
-      query: "fetch test:capacity __name__:used_memory | asPercent(fetch test:capacity __name__:total_memory)"
+      query: "fetch test:capacity name:used_memory | asPercent(fetch test:capacity name:total_memory)"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
         max_timestamp: "2025-01-01T00:03:00Z"
@@ -889,7 +889,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "used_memory", service: "db", dc: "dca1", test: "capacity", type: "ratios"}
+          - metric: {name: "used_memory", service: "db", dc: "dca1", test: "capacity", type: "ratios"}
             values: [75, 80, 65]
 
 
@@ -904,9 +904,9 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "series2", dc: "dca1", test: "sort"}
+          - metric: {name: "series2", dc: "dca1", test: "sort"}
             values: [20, 40, 60]
-          - metric: {__name__: "series1", dc: "dca1", test: "sort"}
+          - metric: {name: "series1", dc: "dca1", test: "sort"}
             values: [10, 50, 30]
 
     - name: "test_case_sort_avg_asc"
@@ -920,9 +920,9 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "low", dc: "dca1", test: "sort_avg"}
+          - metric: {name: "low", dc: "dca1", test: "sort_avg"}
             values: [10, 20, 30]
-          - metric: {__name__: "high", dc: "dca1", test: "sort_avg"}
+          - metric: {name: "high", dc: "dca1", test: "sort_avg"}
             values: [100, 200, 300]
 
     - name: "test_case_head_basic"
@@ -936,7 +936,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "values", dc: "dca1", test: "head_basic"}
+          - metric: {name: "values", dc: "dca1", test: "head_basic"}
             values: [10, 20, 30]
 
     - name: "test_case_alias_basic"
@@ -1006,7 +1006,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "active", dc: "dca1", test: "removeEmpty"}
+          - metric: {name: "active", dc: "dca1", test: "removeEmpty"}
             values: [1, 2, 3]
 
 
@@ -1035,7 +1035,7 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "cpu", region: "us", dc: "dca1", test: "intersectL"}
+          - metric: {name: "cpu", region: "us", dc: "dca1", test: "intersectL"}
             values: [10, 20, 30]
 
     - name: "test_case_timeshift_basic"
@@ -1049,5 +1049,5 @@ test_case:
       expected:
         status: "success"
         data:
-          - metric: {__name__: "current", dc: "dca1", test: "timeshift_basic"}
+          - metric: {name: "current", dc: "dca1", test: "timeshift_basic"}
             values: [10, 20, 30, 40]
