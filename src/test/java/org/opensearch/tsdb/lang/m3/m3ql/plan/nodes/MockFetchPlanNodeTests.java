@@ -8,7 +8,6 @@
 package org.opensearch.tsdb.lang.m3.m3ql.plan.nodes;
 
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.FunctionNode;
-import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagArgsNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagKeyNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagValueNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.ValueNode;
@@ -69,12 +68,11 @@ public class MockFetchPlanNodeTests extends BasePlanNodeTests {
         FunctionNode functionNode = new FunctionNode();
         functionNode.setFunctionName("mockFetch");
 
-        TagArgsNode argsNode = new TagArgsNode();
-        argsNode.addArg("1.0");
-        argsNode.addArg("2.0");
-        argsNode.addArg("3.0");
-        argsNode.addArg("4.0");
-        functionNode.addChildNode(argsNode);
+        // Multiple ValueNodes for comma-separated values (as parser creates them)
+        functionNode.addChildNode(new ValueNode("1.0"));
+        functionNode.addChildNode(new ValueNode("2.0"));
+        functionNode.addChildNode(new ValueNode("3.0"));
+        functionNode.addChildNode(new ValueNode("4.0"));
 
         MockFetchPlanNode planNode = MockFetchPlanNode.of(functionNode);
 
@@ -86,11 +84,9 @@ public class MockFetchPlanNodeTests extends BasePlanNodeTests {
         FunctionNode functionNode = new FunctionNode();
         functionNode.setFunctionName("mockFetch");
 
-        // Add values
-        TagArgsNode argsNode = new TagArgsNode();
-        argsNode.addArg("1.0");
-        argsNode.addArg("2.0");
-        functionNode.addChildNode(argsNode);
+        // Add values as multiple ValueNodes
+        functionNode.addChildNode(new ValueNode("1.0"));
+        functionNode.addChildNode(new ValueNode("2.0"));
 
         // Add tag: name="test_series"
         TagKeyNode tagKey1 = new TagKeyNode();
@@ -119,14 +115,12 @@ public class MockFetchPlanNodeTests extends BasePlanNodeTests {
         noArgs.setFunctionName("mockFetch");
         expectThrows(IllegalArgumentException.class, () -> MockFetchPlanNode.of(noArgs));
 
-        // Invalid numeric value in TagArgsNode
-        FunctionNode invalidTagArgs = new FunctionNode();
-        invalidTagArgs.setFunctionName("mockFetch");
-        TagArgsNode argsNode = new TagArgsNode();
-        argsNode.addArg("1.0");
-        argsNode.addArg("invalid");
-        invalidTagArgs.addChildNode(argsNode);
-        expectThrows(IllegalArgumentException.class, () -> MockFetchPlanNode.of(invalidTagArgs));
+        // Invalid numeric value in multiple ValueNodes
+        FunctionNode invalidMultiValue = new FunctionNode();
+        invalidMultiValue.setFunctionName("mockFetch");
+        invalidMultiValue.addChildNode(new ValueNode("1.0"));
+        invalidMultiValue.addChildNode(new ValueNode("invalid"));
+        expectThrows(IllegalArgumentException.class, () -> MockFetchPlanNode.of(invalidMultiValue));
 
         // Invalid numeric value in ValueNode
         FunctionNode invalidValue = new FunctionNode();
@@ -179,6 +173,21 @@ public class MockFetchPlanNodeTests extends BasePlanNodeTests {
         wrongTagKey.addChildNode(new FunctionNode());
         wrongChild.addChildNode(wrongTagKey);
         expectThrows(IllegalArgumentException.class, () -> MockFetchPlanNode.of(wrongChild));
+    }
+
+    public void testMockFetchPlanNodeFactoryIntegration() {
+        // Test that M3PlanNodeFactory correctly creates MockFetchPlanNode
+        FunctionNode functionNode = new FunctionNode();
+        functionNode.setFunctionName("mockFetch");
+        functionNode.addChildNode(new ValueNode("5.0"));
+        functionNode.addChildNode(new ValueNode("10.0"));
+
+        M3PlanNode result = org.opensearch.tsdb.lang.m3.m3ql.plan.M3PlanNodeFactory.create(functionNode);
+
+        assertNotNull("M3PlanNodeFactory should not return null", result);
+        assertTrue("Result should be MockFetchPlanNode", result instanceof MockFetchPlanNode);
+        MockFetchPlanNode mockFetchNode = (MockFetchPlanNode) result;
+        assertEquals(List.of(5.0, 10.0), mockFetchNode.getValues());
     }
 
     private static class TestMockVisitor extends M3PlanVisitor<String> {

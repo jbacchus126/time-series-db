@@ -12,11 +12,11 @@ import org.opensearch.core.common.io.stream.StreamOutput;
 import org.opensearch.core.xcontent.ToXContent;
 import org.opensearch.core.xcontent.XContentBuilder;
 import org.opensearch.tsdb.core.model.ByteLabels;
-import org.opensearch.tsdb.core.model.FloatSample;
+import org.opensearch.tsdb.core.model.FloatSampleList;
 import org.opensearch.tsdb.core.model.Labels;
-import org.opensearch.tsdb.core.model.Sample;
+import org.opensearch.tsdb.core.model.SampleList;
 import org.opensearch.tsdb.query.aggregator.TimeSeries;
-import org.opensearch.tsdb.query.stage.PipelineStage;
+import org.opensearch.tsdb.query.stage.UnaryPipelineStage;
 import org.opensearch.tsdb.query.stage.PipelineStageAnnotation;
 
 import java.io.IOException;
@@ -35,44 +35,41 @@ import java.util.Objects;
  *
  */
 @PipelineStageAnnotation(name = MockFetchStage.NAME)
-public class MockFetchStage implements PipelineStage {
+public class MockFetchStage implements UnaryPipelineStage {
 
     public static final String NAME = "mockFetch";
 
     private final List<Double> values;
     private final Map<String, String> tags;
-    private long startTime;
-    private long step;
+    private final long startTime;
+    private final long step;
 
     /**
      * Constructor for MockFetchStage.
      *
      * @param values List of values to generate
      * @param tags Map of tag key-value pairs for the series
+     * @param startTime Start timestamp in milliseconds
+     * @param step Step size in milliseconds
      */
-    public MockFetchStage(List<Double> values, Map<String, String> tags) {
+    public MockFetchStage(List<Double> values, Map<String, String> tags, long startTime, long step) {
         if (values == null || values.isEmpty()) {
             throw new IllegalArgumentException("MockFetch requires at least one value");
         }
         this.values = new ArrayList<>(values);
         this.tags = tags != null ? new HashMap<>(tags) : new HashMap<>();
+        this.startTime = startTime;
+        this.step = step;
+
+        // Add default tag if no tags provided
+        if (this.tags.isEmpty()) {
+            this.tags.put("name", "mockFetch");
+        }
     }
 
     @Override
     public String getName() {
         return NAME;
-    }
-
-    /**
-     * Set the query context (start time and step) for generating timestamps.
-     * This method is called by the coordinator aggregator before process() is invoked.
-     *
-     * @param startTime Start timestamp in milliseconds
-     * @param step Step size in milliseconds
-     */
-    public void setQueryContext(long startTime, long step) {
-        this.startTime = startTime;
-        this.step = step;
     }
 
     /**
@@ -89,16 +86,16 @@ public class MockFetchStage implements PipelineStage {
             throw new IllegalStateException("MockFetch stage requires setQueryContext() to be called before process()");
         }
 
-        // Generate samples based on configured values
-        List<Sample> samples = new ArrayList<>(values.size());
+        FloatSampleList.Builder builder = new FloatSampleList.Builder(values.size());
         for (int i = 0; i < values.size(); i++) {
             long timestamp = startTime + (i * step);
             double value = values.get(i);
-            samples.add(new FloatSample(timestamp, (float) value));
+            builder.add(timestamp, value);
         }
 
         long endTime = startTime + ((values.size() - 1) * step);
         Labels labels = ByteLabels.fromMap(tags);
+        SampleList samples = builder.build();
 
         TimeSeries series = new TimeSeries(samples, labels, startTime, endTime, step, null);
 
@@ -107,10 +104,10 @@ public class MockFetchStage implements PipelineStage {
 
     @Override
     public void toXContent(XContentBuilder builder, ToXContent.Params params) throws IOException {
-        builder.startObject();
         builder.field("values", values);
         builder.field("tags", tags);
-        builder.endObject();
+        builder.field("startTime", startTime);
+        builder.field("step", step);
     }
 
     @Override
@@ -120,6 +117,8 @@ public class MockFetchStage implements PipelineStage {
             out.writeDouble(value);
         }
         out.writeMap(tags, StreamOutput::writeString, StreamOutput::writeString);
+        out.writeVLong(startTime);
+        out.writeVLong(step);
     }
 
     /**
@@ -136,7 +135,9 @@ public class MockFetchStage implements PipelineStage {
             values.add(in.readDouble());
         }
         Map<String, String> tags = in.readMap(StreamInput::readString, StreamInput::readString);
-        return new MockFetchStage(values, tags);
+        long startTime = in.readVLong();
+        long step = in.readVLong();
+        return new MockFetchStage(values, tags, startTime, step);
     }
 
     /**
@@ -192,7 +193,17 @@ public class MockFetchStage implements PipelineStage {
             tags.put("name", "mockFetch");
         }
 
-        return new MockFetchStage(values, tags);
+        // Extract startTime and step if provided, otherwise use defaults (0)
+        long startTime = 0;
+        long step = 0;
+        if (args.containsKey("startTime") && args.get("startTime") instanceof Number num) {
+            startTime = num.longValue();
+        }
+        if (args.containsKey("step") && args.get("step") instanceof Number num) {
+            step = num.longValue();
+        }
+
+        return new MockFetchStage(values, tags, startTime, step);
     }
 
     /**

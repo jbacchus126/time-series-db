@@ -423,9 +423,8 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
             stageStack.add(0, new TruncateStage(truncateStart, params.endTime()));
         }
 
-        // Create MockFetchStage with query context
-        MockFetchStage mockFetchStage = new MockFetchStage(planNode.getValues(), planNode.getTags());
-        mockFetchStage.setQueryContext(params.startTime(), params.step());
+        // Create MockFetchStage - generates synthetic data on coordinator
+        MockFetchStage mockFetchStage = new MockFetchStage(planNode.getValues(), planNode.getTags(), params.startTime(), params.step());
 
         // Build coordinator stages: MockFetchStage followed by all accumulated pipeline stages
         List<PipelineStage> coordinatorStages = new ArrayList<>();
@@ -435,14 +434,38 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
         }
 
         ComponentHolder holder = new ComponentHolder(planNode.getId());
+
+        // MockFetch doesn't read from documents but we need the aggregation framework to execute
+        // Use matchAll to include all documents
         holder.addQuery(QueryBuilders.matchAllQuery());
+
+        // Create a dummy TimeSeriesUnfoldAggregationBuilder that MockFetchStage can replace
+        // The unfold won't actually execute because MockFetchStage is coordinator-only and generates its own data
+        // But we need it to satisfy the coordinator's requirement for a TimeSeriesProvider parent
+        String unfoldAggName = planNode.getId() + "_unfold";
+        TimeSeriesUnfoldAggregationBuilder unfoldAgg = new TimeSeriesUnfoldAggregationBuilder(
+            unfoldAggName,
+            null,  // null stages - field won't be serialized, MockFetchStage will provide all the data
+            params.startTime(),
+            params.endTime(),
+            params.step()
+        );
+
+        // Add the dummy unfold aggregation wrapped in a filter
+        FilterAggregationBuilder filterAgg = new FilterAggregationBuilder(String.valueOf(planNode.getId()), QueryBuilders.matchAllQuery());
+        filterAgg.subAggregation(unfoldAgg);
+        holder.addFilterAggregationBuilder(filterAgg);
+
+        // Add coordinator that references the unfold aggregation
+        // The coordinator will extract (empty) time series from unfold, then MockFetchStage generates the real data
+        String unfoldPath = planNode.getId() + ">" + unfoldAggName;
         holder.addPipelineAggregationBuilder(
             new TimeSeriesCoordinatorAggregationBuilder(
                 planNode.getId() + COORDINATOR_NAME_SUFFIX,
                 coordinatorStages,
-                EMPTY_MAP,
-                Map.of(),
-                null
+                EMPTY_MAP,  // No macros
+                Map.of(unfoldAggName, unfoldPath),  // Reference the unfold
+                unfoldAggName  // Use unfold as input (MockFetchStage will replace its data)
             )
         );
 
@@ -990,10 +1013,21 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
             return queryComponentHolder.getPipelineAggregationBuilders().getLast().getName();
         }
 
-        // Otherwise, return the unfold aggregation reference
-        return queryComponentHolder.getId() + AggregationConstants.BUCKETS_PATH_SEPARATOR + queryComponentHolder
-            .getUnfoldAggregationBuilder()
-            .getName();
+        // If there's an unfold aggregation, return its reference
+        if (queryComponentHolder.getUnfoldAggregationBuilder() != null) {
+            return queryComponentHolder.getId() + AggregationConstants.BUCKETS_PATH_SEPARATOR + queryComponentHolder
+                .getUnfoldAggregationBuilder()
+                .getName();
+        }
+
+        // For MockFetch with filter parent containing coordinator: {filterId}>{coordinatorId}
+        if (!queryComponentHolder.getFilterAggregationBuilders().isEmpty()) {
+            // The filter contains the coordinator as a sub-aggregation
+            return queryComponentHolder.getId() + AggregationConstants.BUCKETS_PATH_SEPARATOR + queryComponentHolder.getId()
+                + COORDINATOR_NAME_SUFFIX;
+        }
+
+        throw new IllegalStateException("Cannot determine terminal reference for component holder " + queryComponentHolder.getId());
     }
 
     private TimeRange getAdjustedFetchTimeRange() {
@@ -1166,6 +1200,7 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
             if (unfoldAggregationBuilder != null) {
                 searchSourceBuilder.aggregation(unfoldAggregationBuilder);
             }
+
             for (FilterAggregationBuilder filterAgg : filterAggregationBuilders) {
                 searchSourceBuilder.aggregation(filterAgg);
             }

@@ -744,7 +744,7 @@ public class TimeSeriesCoordinatorAggregationBuilderTests extends OpenSearchTest
 
     /**
      * Test parsing with unsupported token type in stage arguments.
-     * This tests the error path for unsupported token types (e.g., nested objects).
+     * This tests the error path for unsupported token types within map values (e.g., nested objects in maps).
      */
     public void testParseStageWithUnsupportedTokenType() throws Exception {
         String json = """
@@ -753,8 +753,10 @@ public class TimeSeriesCoordinatorAggregationBuilderTests extends OpenSearchTest
               "stages": [
                 {
                   "type": "scale",
-                  "nested_object": {
-                    "key": "value"
+                  "tags": {
+                    "nested": {
+                      "deeply": "unsupported"
+                    }
                   }
                 }
               ],
@@ -766,13 +768,16 @@ public class TimeSeriesCoordinatorAggregationBuilderTests extends OpenSearchTest
         try (XContentParser parser = createParser(JsonXContent.jsonXContent, json)) {
             parser.nextToken(); // Move to START_OBJECT
 
-            // Should throw IllegalArgumentException for unsupported token type (nested object)
+            // Should throw IllegalArgumentException for unsupported token type (nested object within map)
             IllegalArgumentException exception = expectThrows(
                 IllegalArgumentException.class,
                 () -> TimeSeriesCoordinatorAggregationBuilder.parse("unsupported_test", parser)
             );
 
-            assertTrue("Exception should mention unsupported token type", exception.getMessage().contains("Unsupported token type"));
+            assertTrue(
+                "Exception should mention unsupported map value type",
+                exception.getMessage().contains("Unsupported map value type")
+            );
         }
     }
 

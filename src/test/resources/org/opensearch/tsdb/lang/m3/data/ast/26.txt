@@ -1,0 +1,12 @@
+ROOT
+  PIPELINE
+    FUNCTION(mockFetch)
+      VALUE(1)
+      VALUE(2)
+      VALUE(3)
+      VALUE(4)
+      VALUE(5)
+      TAG_KEY(name)
+        TAG_VALUE(test_series)
+      TAG_KEY(region)
+        TAG_VALUE(us-east)

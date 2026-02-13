@@ -9,7 +9,6 @@ package org.opensearch.tsdb.lang.m3.m3ql.plan.nodes;
 
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.FunctionNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.M3ASTNode;
-import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagArgsNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagKeyNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.TagValueNode;
 import org.opensearch.tsdb.lang.m3.m3ql.parser.nodes.ValueNode;
@@ -88,60 +87,41 @@ public class MockFetchPlanNode extends M3PlanNode {
             throw new IllegalArgumentException("mockFetch requires at least one argument (value list)");
         }
 
-        M3ASTNode firstChild = children.get(0);
-        List<Double> values = parseValueList(firstChild);
+        List<Double> values = new ArrayList<>();
         Map<String, String> tags = new HashMap<>();
 
-        for (int i = 1; i < children.size(); i++) {
-            M3ASTNode child = children.get(i);
-            if (!(child instanceof TagKeyNode tagKey)) {
-                throw new IllegalArgumentException("Expected TagKeyNode, but found: " + child.getClass().getSimpleName());
-            }
-
-            String keyName = tagKey.getKeyName();
-            if (keyName == null || keyName.isEmpty()) {
-                throw new IllegalArgumentException("Key name cannot be empty in label specifiers");
-            }
-
-            String tagValue = getTagValueFromLabelKey(tagKey);
-            tags.put(keyName, tagValue);
-        }
-
-        return new MockFetchPlanNode(M3PlannerContext.generateId(), values, tags);
-    }
-
-    /**
-     * Parse the value list from the first argument.
-     *
-     * @param node AST node containing value(s)
-     * @return list of parsed values
-     */
-    private static List<Double> parseValueList(M3ASTNode node) {
-        List<Double> values = new ArrayList<>();
-
-        switch (node) {
-            case ValueNode valueNode -> {
+        // Process all children: ValueNodes are values, TagKeyNodes are tags
+        for (M3ASTNode child : children) {
+            if (child instanceof ValueNode valueNode) {
+                // Parse value and add to list (nan becomes NaN)
                 try {
-                    values.add(Double.parseDouble(valueNode.getValue()));
+                    String value = valueNode.getValue();
+                    if ("nan".equalsIgnoreCase(value)) {
+                        values.add(Double.NaN);
+                    } else {
+                        values.add(Double.parseDouble(value));
+                    }
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid numeric value: " + valueNode.getValue(), e);
                 }
-            }
-            case TagArgsNode tagArgsNode -> {
-                for (String valueStr : tagArgsNode.getArgs()) {
-                    try {
-                        values.add(Double.parseDouble(valueStr));
-                    } catch (NumberFormatException e) {
-                        throw new IllegalArgumentException("Invalid numeric value: " + valueStr, e);
-                    }
+            } else if (child instanceof TagKeyNode tagKey) {
+                // Process tag
+                String keyName = tagKey.getKeyName();
+                if (keyName == null || keyName.isEmpty()) {
+                    throw new IllegalArgumentException("Key name cannot be empty in label specifiers");
                 }
+                String tagValue = getTagValueFromLabelKey(tagKey);
+                tags.put(keyName, tagValue);
+            } else {
+                throw new IllegalArgumentException("Expected ValueNode or TagKeyNode, but found: " + child.getClass().getSimpleName());
             }
-            default -> throw new IllegalArgumentException(
-                "Expected TagArgsNode or ValueNode for values, but found: " + node.getClass().getSimpleName()
-            );
         }
 
-        return values;
+        if (values.isEmpty()) {
+            throw new IllegalArgumentException("mockFetch requires at least one value");
+        }
+
+        return new MockFetchPlanNode(M3PlannerContext.generateId(), values, tags);
     }
 
     /**

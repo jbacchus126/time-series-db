@@ -1,0 +1,2 @@
+# test mockFetch with numeric values and tags
+mockFetch 1,2,3,4,5 name:"test_series" region:"us-east"

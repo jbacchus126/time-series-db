@@ -26,7 +26,9 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
         int numValues = randomIntBetween(1, 10);
         List<Double> values = randomList(numValues, numValues, () -> randomDouble());
         Map<String, String> tags = randomBoolean() ? Map.of("name", "test") : Map.of("name", "test", "dc", "dca1");
-        return new MockFetchStage(values, tags);
+        long startTime = randomLongBetween(0, 10000);
+        long step = randomLongBetween(1, 100);
+        return new MockFetchStage(values, tags, startTime, step);
     }
 
     @Override
@@ -40,8 +42,7 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
         List<Double> values = List.of(1.0, 2.0, 3.0);
         Map<String, String> tags = Map.of("name", "test_series", "region", "us-east");
 
-        MockFetchStage stage = new MockFetchStage(values, tags);
-        stage.setQueryContext(1000L, 1L);
+        MockFetchStage stage = new MockFetchStage(values, tags, 1000L, 1L);
 
         List<TimeSeries> result = stage.process(null);
 
@@ -73,8 +74,7 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
 
     public void testMockFetchStageWithSingleValue() {
         List<Double> values = List.of(42.5);
-        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "constant"));
-        stage.setQueryContext(0L, 1L);
+        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "constant"), 0L, 1L);
 
         List<TimeSeries> result = stage.process(null);
 
@@ -89,8 +89,7 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
 
     public void testMockFetchStageWithLargerStep() {
         List<Double> values = List.of(1.0, 2.0, 3.0, 4.0);
-        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"));
-        stage.setQueryContext(0L, 10L);
+        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"), 0L, 10L);
 
         List<TimeSeries> result = stage.process(null);
 
@@ -107,8 +106,7 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
 
     public void testMockFetchStageProcessWithNonNullInput() {
         List<Double> values = List.of(10.0, 20.0);
-        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"));
-        stage.setQueryContext(0L, 1000L);
+        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"), 0L, 1000L);
 
         // Input should be ignored
         List<TimeSeries> dummyInput = List.of();
@@ -174,34 +172,39 @@ public class MockFetchStageTests extends AbstractWireSerializingTestCase<MockFet
 
     public void testMockFetchStageCreationValidation() {
         // Null values
-        assertThrows(IllegalArgumentException.class, () -> new MockFetchStage(null, Map.of()));
+        assertThrows(IllegalArgumentException.class, () -> new MockFetchStage(null, Map.of(), 0L, 1L));
 
         // Empty values
-        assertThrows(IllegalArgumentException.class, () -> new MockFetchStage(List.of(), Map.of()));
+        assertThrows(IllegalArgumentException.class, () -> new MockFetchStage(List.of(), Map.of(), 0L, 1L));
 
-        // Null tags should be handled gracefully
-        MockFetchStage stage = new MockFetchStage(List.of(1.0, 2.0), null);
-        assertTrue(stage.getTags().isEmpty());
+        // Null tags should be handled gracefully with default tag
+        MockFetchStage stage = new MockFetchStage(List.of(1.0, 2.0), null, 0L, 1L);
+        assertNotNull(stage.getTags());
+        assertEquals(1, stage.getTags().size());
+        assertEquals("mockFetch", stage.getTags().get("name"));
     }
 
-    public void testMockFetchStageThrowsIfProcessCalledWithoutQueryContext() {
+    public void testMockFetchStageWithDefaultStartTimeAndStep() {
         List<Double> values = List.of(1.0, 2.0, 3.0);
-        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"));
+        MockFetchStage stage = new MockFetchStage(values, Map.of("name", "test"), 0L, 1L);
 
-        // Should throw if process() is called without setQueryContext()
-        IllegalStateException exception = expectThrows(IllegalStateException.class, () -> stage.process(null));
-        assertTrue(exception.getMessage().contains("setQueryContext"));
+        List<TimeSeries> result = stage.process(null);
+        assertEquals(1, result.size());
+        TimeSeries series = result.get(0);
+        assertEquals(0L, series.getMinTimestamp());
+        assertEquals(2L, series.getMaxTimestamp());
+        assertEquals(1L, series.getStep());
     }
 
     // ========== Metadata Tests ==========
 
     public void testMockFetchStageGetName() {
-        MockFetchStage stage = new MockFetchStage(List.of(1.0), Map.of());
+        MockFetchStage stage = new MockFetchStage(List.of(1.0), Map.of(), 0L, 1L);
         assertEquals("mockFetch", stage.getName());
     }
 
     public void testMockFetchStageIsCoordinatorOnly() {
-        MockFetchStage stage = new MockFetchStage(List.of(1.0, 2.0, 3.0), Map.of());
+        MockFetchStage stage = new MockFetchStage(List.of(1.0, 2.0, 3.0), Map.of(), 0L, 1L);
         assertTrue(stage.isCoordinatorOnly());
     }
 }
