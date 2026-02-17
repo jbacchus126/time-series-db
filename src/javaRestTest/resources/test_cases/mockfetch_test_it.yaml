@@ -148,21 +148,33 @@ test_case:
       query: "mockFetch 1,2,3,nan,5 name:data | transformNull 0"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
-        max_timestamp: "2025-01-01T00:05:00Z"
+        max_timestamp: "2025-01-01T00:04:00Z"
         step: "1m"
       expected:
         status: "success"
         data:
           - metric: {name: "data"}
             values: [1, 2, 3, 0, 5]
-
+    - name: "mockFetch_with_Nan_values"
+      type: "m3ql"
+      indices: "test_index"
+      query: "mockFetch 1,NaN,3,nan,5 name:data nan:test NaN:another"
+      time_config:
+        min_timestamp: "2025-01-01T00:00:00Z"
+        max_timestamp: "2025-01-01T00:04:00Z"
+        step: "1m"
+      expected:
+        status: "success"
+        data:
+          - metric: {name: "data", nan: "test", NaN: "another"}
+            values: [1, null, 3, null, 5]
     - name: "mockFetch_with_Nan_values_and_tag"
       type: "m3ql"
       indices: "test_index"
-      query: "mockFetch 1,2,3,nan,5 name:data nan:test NaN:another | transformNull 0"
+      query: "mockFetch 1,2,3,Nan,5 name:data nan:test NaN:another | transformNull 0"
       time_config:
         min_timestamp: "2025-01-01T00:00:00Z"
-        max_timestamp: "2025-01-01T00:05:00Z"
+        max_timestamp: "2025-01-01T00:04:00Z"
         step: "1m"
       expected:
         status: "success"

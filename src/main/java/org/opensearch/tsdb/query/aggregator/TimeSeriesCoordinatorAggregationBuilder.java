@@ -210,9 +210,8 @@ public class TimeSeriesCoordinatorAggregationBuilder extends AbstractPipelineAgg
         }
 
         // Validate references
-        // Allow empty references when inputReference is null (e.g., MockFetch generates data without input)
-        if ((references == null || references.isEmpty()) && inputReference != null) {
-            errors.add("references must not be null or empty when inputReference is specified");
+        if (references == null || references.isEmpty()) {
+            errors.add("references must not be null or empty");
         }
 
         // Validate macro definitions (if present)

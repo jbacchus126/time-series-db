@@ -8,6 +8,7 @@
 package org.opensearch.tsdb.lang.m3.dsl;
 
 import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.MatchNoneQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.search.aggregations.PipelineAggregationBuilder;
@@ -435,29 +436,27 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
 
         ComponentHolder holder = new ComponentHolder(planNode.getId());
 
-        // MockFetch doesn't read from documents but we need the aggregation framework to execute
-        // Use matchAll to include all documents
-        holder.addQuery(QueryBuilders.matchAllQuery());
+        // Use MatchNoneQueryBuilder to match 0 documents without scanning data.
+        // MockFetchStage generates synthetic data during coordinator reduce phase.
+        holder.addQuery(new MatchNoneQueryBuilder());
 
-        // Create a dummy TimeSeriesUnfoldAggregationBuilder that MockFetchStage can replace
-        // The unfold won't actually execute because MockFetchStage is coordinator-only and generates its own data
-        // But we need it to satisfy the coordinator's requirement for a TimeSeriesProvider parent
+        // Create a dummy TimeSeriesUnfoldAggregationBuilder as the parent aggregation
+        // The unfold won't execute - MockFetchStage generates all data during coordinator reduce phase
         String unfoldAggName = planNode.getId() + "_unfold";
         TimeSeriesUnfoldAggregationBuilder unfoldAgg = new TimeSeriesUnfoldAggregationBuilder(
             unfoldAggName,
-            null,  // null stages - field won't be serialized, MockFetchStage will provide all the data
+            null,  // null stages - MockFetchStage will provide all the data
             params.startTime(),
             params.endTime(),
             params.step()
         );
 
-        // Add the dummy unfold aggregation wrapped in a filter
-        FilterAggregationBuilder filterAgg = new FilterAggregationBuilder(String.valueOf(planNode.getId()), QueryBuilders.matchAllQuery());
+        // Wrap unfold in a filter aggregation with MatchNoneQueryBuilder
+        FilterAggregationBuilder filterAgg = new FilterAggregationBuilder(String.valueOf(planNode.getId()), new MatchNoneQueryBuilder());
         filterAgg.subAggregation(unfoldAgg);
         holder.addFilterAggregationBuilder(filterAgg);
 
         // Add coordinator that references the unfold aggregation
-        // The coordinator will extract (empty) time series from unfold, then MockFetchStage generates the real data
         String unfoldPath = planNode.getId() + ">" + unfoldAggName;
         holder.addPipelineAggregationBuilder(
             new TimeSeriesCoordinatorAggregationBuilder(

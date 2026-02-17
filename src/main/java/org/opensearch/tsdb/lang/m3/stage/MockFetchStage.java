@@ -90,7 +90,10 @@ public class MockFetchStage implements UnaryPipelineStage {
         for (int i = 0; i < values.size(); i++) {
             long timestamp = startTime + (i * step);
             double value = values.get(i);
-            builder.add(timestamp, value);
+            // Skip missing samples
+            if (!Double.isNaN(value)) {
+                builder.add(timestamp, value);
+            }
         }
 
         long endTime = startTime + ((values.size() - 1) * step);
