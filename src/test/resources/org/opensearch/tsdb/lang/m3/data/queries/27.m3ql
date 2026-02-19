@@ -1,0 +1,2 @@
+# Tests: multiple mockFetchLine sources, binary operations, aggregations, transformations
+mockFetchLine 100 name:baseline env:prod | mockFetchLine 50 name:threshold env:dev | scale 0.5 | sum | alias TotalScaled

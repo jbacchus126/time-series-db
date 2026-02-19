@@ -1,0 +1,6 @@
+ALIAS(TotalScaled)
+  AGG(SUM, groupBy=[])
+    SCALE(0.5)
+      UNION
+        MOCK_FETCH_LINE(value=100.0, tags={name=baseline, env=prod})
+        MOCK_FETCH_LINE(value=50.0, tags={name=threshold, env=dev})

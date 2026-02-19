@@ -220,6 +220,7 @@ FunctionNode Function() :
         LOOKAHEAD({ "alias".equals(token.image) }) AliasArgument(node)
       | LOOKAHEAD({ "fetch".equals(token.image) }) (LOOKAHEAD(2) Tag(node))*
       | LOOKAHEAD({ "mockFetch".equals(token.image) }) MockFetchArguments(node)
+      | LOOKAHEAD({ "mockFetchLine".equals(token.image) }) MockFetchLineArguments(node)
       | (LOOKAHEAD(2) Argument(node))*
     )
     { return node; }
@@ -326,6 +327,42 @@ void MockFetchArguments(M3ASTNode parentNode) :
         Tag((FunctionNode)parentNode)
     )*
 }
+
+void MockFetchLineArguments(M3ASTNode parentNode) :
+{
+    Token t;
+    Token sign = null;
+    StringBuilder numberStr = new StringBuilder();
+}
+{
+    // Parse single numeric value argument or nan
+    (
+        <NULL>
+        {
+            parentNode.addChildNode(new ValueNode("nan"));
+        }
+      |
+        [ sign = <OPERATOR> { if (!"-".equals(sign.image)) throw new ParseException("Expected '-' but got: " + sign.image); } ]
+        ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
+        {
+            if (sign != null) {
+                numberStr.append("-").append(t.image);
+                parentNode.addChildNode(new ValueNode(numberStr.toString()));
+                numberStr.setLength(0);
+                sign = null;
+            } else {
+                parentNode.addChildNode(new ValueNode(t.image));
+            }
+        }
+    )
+    // Then parse tags
+    (
+        LOOKAHEAD(2)
+        Tag((FunctionNode)parentNode)
+    )*
+}
+
+
 
 void Argument(M3ASTNode parentNode) :
 {
