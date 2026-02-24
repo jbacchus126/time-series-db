@@ -418,12 +418,6 @@ public class SourceBuilderVisitor extends M3PlanVisitor<SourceBuilderVisitor.Com
 
     @Override
     public ComponentHolder visit(MockFetchPlanNode planNode) {
-        // Add TruncateStage if this is root visitor and time buffer was adjusted
-        if (isRootVisitor && context.isTimeBufferAdjusted() && (stageStack.isEmpty() || !(stageStack.get(0) instanceof TruncateStage))) {
-            long truncateStart = context.getTruncateStartTime() != null ? context.getTruncateStartTime() : params.startTime();
-            stageStack.add(0, new TruncateStage(truncateStart, params.endTime()));
-        }
-
         // Create MockFetchStage - generates synthetic data on coordinator
         MockFetchStage mockFetchStage = new MockFetchStage(planNode.getValues(), planNode.getTags(), params.startTime(), params.step());
 
