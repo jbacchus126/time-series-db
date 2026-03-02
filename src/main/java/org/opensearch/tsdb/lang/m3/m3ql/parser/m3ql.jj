@@ -335,13 +335,8 @@ void MockFetchLineArguments(M3ASTNode parentNode) :
     StringBuilder numberStr = new StringBuilder();
 }
 {
-    // Parse single numeric value argument or nan
+    // Parse single numeric value argument
     (
-        <NULL>
-        {
-            parentNode.addChildNode(new ValueNode("nan"));
-        }
-      |
         [ sign = <OPERATOR> { if (!"-".equals(sign.image)) throw new ParseException("Expected '-' but got: " + sign.image); } ]
         ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
         {

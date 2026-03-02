@@ -69,12 +69,9 @@
         "buckets_path" : [ ],
         "stages" : [
           {
-            "type" : "mockFetch",
-            "values" : [
-              5.0,
-              10.0,
-              15.0
-            ],
+            "type" : "mockFetchLine",
+            "value" : 5.0,
+            "endTime" : 1001000000,
             "tags" : {
               "name" : "b",
               "env" : "dev"

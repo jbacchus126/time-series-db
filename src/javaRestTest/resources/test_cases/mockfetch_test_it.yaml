@@ -330,14 +330,3 @@ test_case:
             values: [10, 10, 10]
           - metric: {name: "line2"}
             values: [20, 20, 20]
-    - name: "mockFetchLine_with_nan"
-      type: "m3ql"
-      indices: "test_index"
-      query: "mockFetchLine nan name:nan_line"
-      time_config:
-        min_timestamp: "2025-01-01T00:00:00Z"
-        max_timestamp: "2025-01-01T00:03:00Z"
-        step: "1m"
-      expected:
-        status: "failure"
-        error_message: "Query execution failed: status=400, error={\"error\":\"Invalid numeric value in mockFetchLine arguments\"}"
