@@ -273,8 +273,6 @@ void AliasArgument(M3ASTNode parentNode) :
 void MockFetchArguments(M3ASTNode parentNode) :
 {
     Token t;
-    Token sign = null;
-    StringBuilder numberStr = new StringBuilder();
 }
 {
     // Parse comma-separated value arguments (numbers, possibly negative, or nan)
@@ -285,17 +283,10 @@ void MockFetchArguments(M3ASTNode parentNode) :
                 parentNode.addChildNode(new ValueNode("nan"));
             }
           |
-            [ sign = <OPERATOR> { if (!"-".equals(sign.image)) throw new ParseException("Expected '-' but got: " + sign.image); } ]
             ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
-            {
-                if (sign != null) {
-                    numberStr.append("-").append(t.image);
-                    parentNode.addChildNode(new ValueNode(numberStr.toString()));
-                    numberStr.setLength(0);
-                    sign = null;
-                } else {
-                    parentNode.addChildNode(new ValueNode(t.image));
-                }
+            { 
+                parentNode.addChildNode(new ValueNode(t.image));
+
             }
         )
         (
@@ -305,18 +296,9 @@ void MockFetchArguments(M3ASTNode parentNode) :
                 {
                     parentNode.addChildNode(new ValueNode("nan"));
                 }
-              |
-                [ sign = <OPERATOR> { if (!"-".equals(sign.image)) throw new ParseException("Expected '-' but got: " + sign.image); } ]
-                ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
+              |  ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
                 {
-                    if (sign != null) {
-                        numberStr.append("-").append(t.image);
-                        parentNode.addChildNode(new ValueNode(numberStr.toString()));
-                        numberStr.setLength(0);
-                        sign = null;
-                    } else {
-                        parentNode.addChildNode(new ValueNode(t.image));
-                    }
+                parentNode.addChildNode(new ValueNode(t.image));
                 }
             )
         )*
@@ -331,23 +313,13 @@ void MockFetchArguments(M3ASTNode parentNode) :
 void MockFetchLineArguments(M3ASTNode parentNode) :
 {
     Token t;
-    Token sign = null;
-    StringBuilder numberStr = new StringBuilder();
 }
 {
     // Parse single numeric value argument
     (
-        [ sign = <OPERATOR> { if (!"-".equals(sign.image)) throw new ParseException("Expected '-' but got: " + sign.image); } ]
         ( t = <SCIENTIFIC_NUMBER> | t = <IDENTIFIER> )
         {
-            if (sign != null) {
-                numberStr.append("-").append(t.image);
-                parentNode.addChildNode(new ValueNode(numberStr.toString()));
-                numberStr.setLength(0);
-                sign = null;
-            } else {
-                parentNode.addChildNode(new ValueNode(t.image));
-            }
+            parentNode.addChildNode(new ValueNode(t.image));
         }
     )
     // Then parse tags

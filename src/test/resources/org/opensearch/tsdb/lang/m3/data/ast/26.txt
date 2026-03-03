@@ -1,7 +1,7 @@
 ROOT
   PIPELINE
     FUNCTION(mockFetch)
-      VALUE(10)
+      VALUE(-10)
       VALUE(20)
       VALUE(30)
       TAG_KEY(name)
@@ -9,7 +9,7 @@ ROOT
       TAG_KEY(env)
         TAG_VALUE(prod)
     FUNCTION(mockFetchLine)
-      VALUE(5)
+      VALUE(-5)
       TAG_KEY(name)
         TAG_VALUE(b)
       TAG_KEY(env)

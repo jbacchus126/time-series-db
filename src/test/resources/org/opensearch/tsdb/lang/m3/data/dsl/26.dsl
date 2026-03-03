@@ -46,7 +46,7 @@
           {
             "type" : "mockFetch",
             "values" : [
-              10.0,
+              -10.0,
               20.0,
               30.0
             ],
@@ -70,7 +70,7 @@
         "stages" : [
           {
             "type" : "mockFetchLine",
-            "value" : 5.0,
+            "value" : -5.0,
             "endTime" : 1001000000,
             "tags" : {
               "name" : "b",
