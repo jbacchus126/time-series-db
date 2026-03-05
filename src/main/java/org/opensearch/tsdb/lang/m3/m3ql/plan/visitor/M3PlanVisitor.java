@@ -30,6 +30,7 @@ import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.M3PlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MapKeyPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MockFetchPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MockFetchLinePlanNode;
+import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MockFetchLinearPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.MovingPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.OffsetPlanNode;
 import org.opensearch.tsdb.lang.m3.m3ql.plan.nodes.PerSecondPlanNode;
@@ -275,6 +276,15 @@ public abstract class M3PlanVisitor<T> {
      * @return the result of processing the MockFetchLinePlanNode
      */
     public T visit(MockFetchLinePlanNode planNode) {
+        return process(planNode);
+    }
+
+    /**
+     * Visit method for MockFetchLinearPlanNode.
+     * @param planNode the MockFetchLinearPlanNode to visit
+     * @return the result of processing the MockFetchLinearPlanNode
+     */
+    public T visit(MockFetchLinearPlanNode planNode) {
         return process(planNode);
     }
 
