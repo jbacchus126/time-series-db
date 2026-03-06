@@ -56,7 +56,6 @@ public class Constants {
             "histogramCDF",
             "jainCP",
             "mockFetchLinear",
-            "mockFetchPeriodic",
             "multiBurnRate",
             "nonNegativeDerivative",
             "nPercentile",
@@ -153,6 +152,11 @@ public class Constants {
          * mockFetchLine function name.
          */
         public static final String MOCK_FETCH_LINE = "mockFetchLine";
+
+        /**
+         * mockFetchPeriodic function name.
+         */
+        public static final String MOCK_FETCH_PERIODIC = "mockFetchPeriodic";
 
         /**
          * head function name.
