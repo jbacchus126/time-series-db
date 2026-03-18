@@ -1,0 +1,20 @@
+# Benchmark-specific ignores
+
+# Python virtual environment
+venv/
+
+# Benchmark results (can be regenerated)
+results/*.md
+results/*.csv
+results/*.json
+
+# Large data files (should be downloaded separately)
+workloads/timeseries/timeseries.json
+workloads/timeseries-workload.tar.gz
+
+# OSB offset files (auto-generated)
+*.offset
+
+# Temporary test files
+test_tsdb_manual.py
+

@@ -1,0 +1,34 @@
+{% import "benchmark.helpers" as benchmark with context %}
+{
+  "version": 2,
+  "description": "Timeseries benchmark workload with example monitoring data",
+  "custom-runners": [
+    "m3ql_bulk_runner",
+    "m3ql_single_query_runner"
+  ],
+  "indices": [
+    {
+      "name": "timeseries",
+      "body": "index.json"
+    }
+  ],
+  "corpora": [
+    {
+      "name": "timeseries-example",
+      "description": "Small example dataset for testing and development",
+      "documents": [
+        {
+          "source-file": "example_data.json.gz",
+          "document-count": 793,
+          "target-index": "timeseries"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {{ benchmark.collect(parts="operations/*.json") }}
+  ],
+  "test_procedures": [
+    {{ benchmark.collect(parts="test_procedures/*.json") }}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "m3ql-query",
+  "description": "Query-only test (assumes data already loaded).",
+  "default": false,
+  "schedule": [
+    {
+      "name": "m3ql-query-test",
+      "operation": "m3ql-queries-from-file",
+      "clients": 1,
+      "iterations": 250,
+      "target-throughput": 10
+    }
+  ]
+}

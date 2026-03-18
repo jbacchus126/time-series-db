@@ -1,0 +1,74 @@
+[
+  {
+    "name": "cpu-usage-by-host",
+    "description": "Get CPU usage across all hosts",
+    "query": "fetch name:cpu field:usage_user | avg hostname",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "cpu-high-usage-alert",
+    "description": "Alert when CPU usage exceeds 40",
+    "query": "fetch name:cpu field:usage_user | avg hostname | > 40",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "memory-by-region",
+    "description": "Memory usage aggregated by region",
+    "query": "fetch name:mem field:total | sum region",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "cpu-by-datacenter",
+    "description": "CPU usage by datacenter",
+    "query": "fetch name:cpu field:usage_user | avg datacenter",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "request-rate",
+    "description": "HTTP requests per second by service",
+    "query": "fetch name:http_requests field:total | perSecond | sum service",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "cpu-scaled",
+    "description": "CPU usage scaled down",
+    "query": "fetch name:cpu field:usage_user | scale 0.1",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "memory-with-gap-filling",
+    "description": "Memory usage with last value carried forward",
+    "query": "fetch name:mem field:total | keepLastValue 2m | sum region",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "cpu-by-region",
+    "description": "CPU by region",
+    "query": "fetch name:cpu field:usage_user region:reg0 | avg hostname",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  },
+  {
+    "name": "all-metrics-count",
+    "description": "Count all data points",
+    "query": "fetch name:* | sum name",
+    "start": "1735718400000",
+    "end": "1735722000000",
+    "step": 60000
+  }
+]

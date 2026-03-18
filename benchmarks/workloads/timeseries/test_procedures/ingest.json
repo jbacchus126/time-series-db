@@ -1,0 +1,29 @@
+{
+  "name": "ingest",
+  "description": "Indexes the whole document corpus",
+  "default": true,
+  "schedule": [
+    {
+      "operation": {
+        "operation-type": "delete-index"
+      }
+    },
+    {
+      "operation": {
+        "operation-type": "create-index"
+      }
+    },
+    {
+      "name": "wait-for-cluster-stability",
+      "operation": {
+        "operation-type": "sleep",
+        "duration": 10
+      }
+    },
+    {
+      "operation": "ingest",
+      "clients": 2
+    }
+  ]
+}
+

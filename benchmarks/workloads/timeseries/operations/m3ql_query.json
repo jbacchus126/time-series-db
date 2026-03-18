@@ -1,0 +1,5 @@
+{
+  "name": "m3ql-queries-from-file",
+  "operation-type": "m3ql-query",
+  "param-source": "m3ql-bulk-query-source"
+}

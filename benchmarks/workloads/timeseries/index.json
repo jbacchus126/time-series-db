@@ -1,0 +1,34 @@
+{
+  "settings": {
+    "index.number_of_shards": {{number_of_shards | default(1)}},
+    "index.number_of_replicas": {{number_of_replicas | default(0)}},
+    "index.queries.cache.enabled": {{query_cache_enabled | default(false) | tojson}},
+    "index.requests.cache.enable": {{requests_cache_enabled | default(false) | tojson}},
+    "index.translog.durability": {{wal_durability | default("async") | tojson}},
+    "index.translog.sync_interval": {{wal_sync_interval | default("1s") | tojson}},
+    "refresh_interval": {{refresh_interval | default("1s") | tojson}},
+    "index.tsdb_engine.enabled": true,
+    "index.tsdb_engine.labels.storage_type": "{{labels_storage_type | default("binary")}}",
+    "index.tsdb_engine.ooo_cutoff": "2h",
+    "index.tsdb_engine.lang.m3.default_step_size": "60s",
+    "index.store.factory": "tsdb_store"
+},
+  "mappings": {
+    "properties": {
+        "labels": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "value": {
+          "type": "double"
+        },
+        "timestamp_range": {
+          "type": "long_range"
+        }
+      }
+    }
+}
+
